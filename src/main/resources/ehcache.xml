@@ -1,0 +1,13 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd">
+
+    <diskStore path="java.io.tmpdir"/>
+
+    <cache name="data"
+           eternal="false"
+           overflowToDisk="true"
+           maxElementsInMemory="300"
+           timeToIdleSeconds="500"
+           timeToLiveSeconds="500"
+            />
+</ehcache>
