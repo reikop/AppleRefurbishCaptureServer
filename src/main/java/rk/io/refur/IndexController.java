@@ -25,12 +25,6 @@ public class IndexController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 	
-	private final String APPLE_REFURB_URL = "http://www.apple.com#{locale}/shop/browse/home/specialdeals";
-	
-	private final String DEFAULT_LOCALE = "kr";
-	
-	private final String DEFAULT_PRODUCT = "mac";
-	
 
 	@Autowired
 	private RefurService refurService;
@@ -41,38 +35,19 @@ public class IndexController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> index(Locale locale, Model model) throws IOException {
-		return refurService.getURLFromMapData(getRefurbURL(locale)+"/"+DEFAULT_PRODUCT);
+		return refurService.getURLFromMapData(locale);
 	}
 	
-	@RequestMapping( value = "/{prod}", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object>  loc(Locale locale, @PathVariable String prod) throws IOException{
-		return refurService.getURLFromMapData(getRefurbURL(locale)+"/"+prod);
+	@RequestMapping( value = "/{contry}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object>  loc(@PathVariable String contry) throws IOException{
+		return refurService.getURLFromMapData(contry);
 	}
 	
-	@RequestMapping( value = "/{prod}/{contry}", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object>  prod(@PathVariable String contry, @PathVariable String prod) throws IOException{
-		
-		Map<String, Object> urlFromMapData = refurService.getURLFromMapData(getRefurbURL(contry)+"/"+prod);
-		return urlFromMapData;
-	}
+//	@RequestMapping( value = "/{prod}/{contry}", method = RequestMethod.GET)
+//	public  @ResponseBody Map<String, Object>  prod(@PathVariable String contry, @PathVariable String prod) throws IOException{
+//		
+//		Map<String, Object> urlFromMapData = refurService.getURLFromMapData(getRefurbURL(contry)+"/"+prod);
+//		return urlFromMapData;
+//	}
 
-	private String getRefurbURL(Locale locale){
-		String result = "";
-		if(locale == null || locale.getCountry().isEmpty()){
-			result = "/"+DEFAULT_LOCALE;
-		}else if(locale.getCountry().equals("US")){
-			result = "";
-		}else{
-			result = "/"+locale.getCountry().toLowerCase();
-		}
-		return APPLE_REFURB_URL.replace("#{locale}", result);
-	}
-	
-	private String getRefurbURL(String contry){
-		if(contry.toUpperCase().equals("US")){
-			return APPLE_REFURB_URL.replace("#{locale}", "");
-		}else{
-			return APPLE_REFURB_URL.replace("#{locale}", "/"+contry);
-		}
-	}
 }

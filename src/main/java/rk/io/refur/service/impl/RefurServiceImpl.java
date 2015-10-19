@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -23,12 +24,35 @@ import rk.io.refur.service.RefurService;
 @Service("refurService")
 public class RefurServiceImpl implements RefurService {
 	
-	@Autowired
-	private RefurDao refurDao;
+	private final String APPLE_REFURB_URL = "http://www.apple.com#{locale}/shop/browse/home/specialdeals";
 	
-	@Override
-	@Cacheable(key="#p0", value = "data")
-	public Map<String, Object> getURLFromMapData(String url) {
+	private final String COUNTRY_URL = "http://www.apple.com/choose-your-country";	
+	
+	private final String DEFAULT_LOCALE = "kr";
+	
+	private final String DEFAULT_PRODUCT = "/mac";
+	
+	private String getRefurbURL(Locale locale){
+		String result = "";
+		if(locale == null || locale.getCountry().isEmpty()){
+			result = "/"+DEFAULT_LOCALE;
+		}else if(locale.getCountry().equals("US")){
+			result = "";
+		}else{
+			result = "/"+locale.getCountry().toLowerCase();
+		}
+		return APPLE_REFURB_URL.replace("#{locale}", result);
+	}
+	
+	private String getRefurbURL(String contry){
+		if(contry.toUpperCase().equals("US")){
+			return APPLE_REFURB_URL.replace("#{locale}", "");
+		}else{
+			return APPLE_REFURB_URL.replace("#{locale}", "/"+contry);
+		}
+	}
+	
+	private Map<String, Object> getData(String url){
 		HashMap map = new HashMap<String, Object>();
 		map.put("update", new Date().getTime());
 		if(url.lastIndexOf("favicon") > -1){
@@ -56,5 +80,43 @@ public class RefurServiceImpl implements RefurService {
 		map.put("data", data);
 		return map;
 	}
+	
+	
+	
+	@Autowired
+	private RefurDao refurDao;
+	
+	@Override
+	@Cacheable(key="#p0", value = "data")
+	public Map<String, Object> getURLFromMapData(String locale) {
+		String url = getRefurbURL(locale)+DEFAULT_PRODUCT;
+		return getData(url);
+	}
+	
+	@Override
+	@Cacheable(key="#p0", value = "data")
+	public Map<String, Object> getURLFromMapData(Locale locale) {
+		String url = getRefurbURL(locale)+DEFAULT_PRODUCT;
+		return getData(url);
+	}
 
+	@Override
+	@Cacheable(key="#p0", value = "data")
+	public Map<String, Object> getCountryList(){
+		HashMap map = new HashMap<String, Object>();
+		Document doc;
+		try {
+			doc = refurDao.getAppleSrc(COUNTRY_URL);
+		} catch (IOException e) {
+			map.put("msg", e.getMessage());
+			return map;
+		}
+		
+		Elements lists = doc.select("#content a");
+		for(Element tabs : lists){
+			System.out.println(tabs);
+		}
+		
+		return map;
+	}
 }
