@@ -1,7 +1,6 @@
-package rk.io.refur;
+package rk.io.refur.net;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,37 +16,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import rk.io.refur.service.RefurService;
 
-/**
- * Handles requests for the application home page.
- */
 @Controller
-public class IndexController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+@RequestMapping("/$r/")
+public class RefurController {
+private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 	
 
 	@Autowired
 	private RefurService refurService;
-	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 * @throws IOException 
-	 */
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> index(Locale locale, Model model) throws IOException {
-		return refurService.getURLFromMapData(locale);
+		return refurService.getCountryList();
 	}
 	
 	@RequestMapping( value = "/{contry}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object>  loc(@PathVariable String contry) throws IOException{
 		return refurService.getURLFromMapData(contry);
 	}
-	
-//	@RequestMapping( value = "/{prod}/{contry}", method = RequestMethod.GET)
-//	public  @ResponseBody Map<String, Object>  prod(@PathVariable String contry, @PathVariable String prod) throws IOException{
-//		
-//		Map<String, Object> urlFromMapData = refurService.getURLFromMapData(getRefurbURL(contry)+"/"+prod);
-//		return urlFromMapData;
-//	}
-
 }

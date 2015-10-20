@@ -26,7 +26,7 @@ public class RefurServiceImpl implements RefurService {
 	
 	private final String APPLE_REFURB_URL = "http://www.apple.com#{locale}/shop/browse/home/specialdeals";
 	
-	private final String COUNTRY_URL = "http://www.apple.com/choose-your-country";	
+	private final String COUNTRY_URL = "http://www.apple.com/choose-your-country/";	
 	
 	private final String DEFAULT_LOCALE = "kr";
 	
@@ -101,7 +101,7 @@ public class RefurServiceImpl implements RefurService {
 	}
 
 	@Override
-	@Cacheable(key="#p0", value = "data")
+//	@Cacheable(key="#p1", value = "data")
 	public Map<String, Object> getCountryList(){
 		HashMap map = new HashMap<String, Object>();
 		Document doc;
@@ -111,12 +111,16 @@ public class RefurServiceImpl implements RefurService {
 			map.put("msg", e.getMessage());
 			return map;
 		}
-		
+		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
 		Elements lists = doc.select("#content a");
 		for(Element tabs : lists){
-			System.out.println(tabs);
+			HashMap<String, Object> m = new HashMap<String, Object>();
+			m.put("code", tabs.select("a").attr("href"));
+			m.put("img", tabs.select("img").attr("src"));
+			m.put("name", tabs.select("a").text());
+			data.add(m);
 		}
-		
+		map.put("data", data);
 		return map;
 	}
 }
