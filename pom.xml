@@ -65,6 +65,7 @@
 			<version>${org.slf4j-version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -177,5 +178,16 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+        <resource>
+            <directory>src/main/java</directory>
+            <includes>                      
+                <include>**/*.xml</include>
+            </includes>
+        </resource>
+        <resource>
+            <directory>src/main/resources</directory>
+        </resource>
+    </resources>
     </build>
 </project>

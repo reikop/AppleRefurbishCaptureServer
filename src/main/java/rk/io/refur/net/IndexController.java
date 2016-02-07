@@ -1,6 +1,7 @@
 package rk.io.refur.net;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,16 +37,8 @@ public class IndexController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Locale locale, Model model) throws IOException {
 //		return refurService.getURLFromMapData(locale);
+		model.addAttribute("serverTime", new Date());
 		return "home";
 	}
 	
-//	@RequestMapping( value = "/{contry}", method = RequestMethod.GET)
-//	public  @ResponseBody Map<String, Object>  loc(@PathVariable String contry) throws IOException{
-//		return refurService.getURLFromMapData(contry);
-//	}
-//	
-//	@RequestMapping( value = "/country", method = RequestMethod.GET)
-//	public  @ResponseBody Map<String, Object>  prod(@PathVariable String contry, @PathVariable String prod) throws IOException{
-//	}
-
 }

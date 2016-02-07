@@ -54,7 +54,7 @@ public class RefurServiceImpl implements RefurService {
 	
 	private Map<String, Object> getData(String url){
 		HashMap map = new HashMap<String, Object>();
-		map.put("update", new Date().getTime());
+		map.put("update", System.currentTimeMillis());
 		if(url.lastIndexOf("favicon") > -1){
 			map.put("msg", "favicon");
 			return map;
